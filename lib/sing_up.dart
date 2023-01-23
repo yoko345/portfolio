@@ -89,9 +89,11 @@ class _SignUpState extends State<SignUp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height/5,),
+              SizedBox(height: MediaQuery.of(context).size.height/6,),
+              const Text('Chat App', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),),
+              SizedBox(height: MediaQuery.of(context).size.height/6,),
               _alreadySignedUp
-              ? const SizedBox(height: 50,)
+              ? const SizedBox(height: 30,)
               : TextFormField(
                 controller: nameEditingController,
                 keyboardType: TextInputType.text,
