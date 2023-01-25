@@ -15,19 +15,38 @@ class FriendCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     final searchWord = ref.watch(searchProvider);
-    final imageUrl = ref.watch(imageUrlProvider);
+    final imageUrlMap = ref.watch(imageUrlMapProvider);
     final userName = ref.watch(userNameProvider);
     final recentMonth =  ref.watch(recentMonthProvider);
     final recentDay =  ref.watch(recentDayProvider);
     final newChat = ref.watch(newChatProvider);
-    final newChatList = ref.watch(newChatListProvider);
+    final newChatMap = ref.watch(newChatMapProvider);
     final newChatCounter = ref.watch(newChatCounterProvider);
     final oldChat = ref.watch(oldChatProvider);
-    final oldChatList = ref.watch(oldChatListProvider);
+    final oldChatMap = ref.watch(oldChatMapProvider);
 
     FirebaseFirestore.instance.collection('images').where('userName', isEqualTo: friendCard['friendName']).get().then((QuerySnapshot snapshot) {
       snapshot.docs.forEach((doc) {
-        ref.read(imageUrlProvider.notifier).state = doc.get('imageUrl');
+        // ref.read(imageUrlProvider.notifier).state = doc.get('imageUrl');
+        if (doc.get('imageUrl') != '') {
+          imageUrlMap['$index'] = doc.get('imageUrl');
+        } else {
+          imageUrlMap['$index'] = '';
+        }
+      });
+    });
+
+    FirebaseFirestore.instance.collection('chats').orderBy('date').get().then((QuerySnapshot snapshot) {
+      snapshot.docs.forEach((doc) {
+        if (doc.get('friendName') != '' && doc.get('userName') != '' && userName != '') {
+          if ((doc.get('friendName') == friendCard['friendName'] && doc.get('userName') == userName) || (doc.get('friendName') == userName && doc.get('userName') == friendCard['friendName'])) {
+            if (!oldChat.contains(doc.get('chat'))) {
+              oldChat.add(doc.get('chat'));
+              oldChatMap['$index'] = oldChat;
+              debugPrint('$oldChatMap');
+            }
+          }
+        }
       });
     });
 
@@ -35,13 +54,8 @@ class FriendCard extends ConsumerWidget {
       snapshot.docs.forEach((doc) {
         if(doc.get('friendName') != '' && doc.get('userName') != '' &&  userName != '') {
           if((doc.get('friendName') ==  friendCard['friendName'] && doc.get('userName') == userName) || (doc.get('friendName') == userName && doc.get('userName') == friendCard['friendName'])) {
-              ref.read(recentMonthProvider.notifier).state = doc.get('dateMonth');
-              ref.read(recentDayProvider.notifier).state = doc.get('dateDay');
-
-            if(!oldChat.contains(doc.get('chat'))) {
-              oldChat.add(doc.get('chat'));
-              oldChatList['$index'] = oldChat;
-            }
+            ref.read(recentMonthProvider.notifier).state = doc.get('dateMonth');
+            ref.read(recentDayProvider.notifier).state = doc.get('dateDay');
 
             if(doc.get('friendName') == userName && doc.get('userName') == friendCard['friendName']) {
               if(!newChat.contains(doc.get('newChat'))){
@@ -50,14 +64,14 @@ class FriendCard extends ConsumerWidget {
                   ref.read(recentDayProvider.notifier).state = doc.get('dateDay');
 
                   newChat.add(doc.get('newChat'));
-                  newChatList['$index'] = newChat;
-                  ref.read(newChatCounterProvider.notifier).state = newChatList['$index'].length;
+                  newChatMap['$index'] = newChat;
+                  ref.read(newChatCounterProvider.notifier).state = newChatMap['$index'].length;
                 }
               }
             }
 
           } else if((friendCard['friendName'] != doc.get('friendName') && userName == doc.get('userName')) || (friendCard['friendName'] == doc.get('userName') && userName != doc.get('friendName'))) {
-            newChatList['$index'] = [];
+            newChatMap['$index'] = [];
           }
 
         }
@@ -70,13 +84,16 @@ class FriendCard extends ConsumerWidget {
         child: ListTile(
           leading: ClipRRect(
             borderRadius: BorderRadius.circular(30),
-            child: imageUrl==''
-                ? const Icon(Icons.image)
-                : Image.network(imageUrl, width: 30, height: 30, fit: BoxFit.cover,),
+            // child: imageUrl==''
+            child: imageUrlMap['$index'] != null
+                // ? const Icon(Icons.image)
+                // : Image.network(imageUrl, width: 30, height: 30, fit: BoxFit.cover,),
+                ? Image.network(imageUrlMap['$index'], width: 30, height: 30, fit: BoxFit.cover,)
+                : const Icon(Icons.image),
           ),
           title: Text(friendCard['friendName']),
           subtitle: Text(
-            oldChatList['$index'] != null ? '${oldChatList['$index'].join('  ')}' : '',
+            oldChatMap['$index'] != null ? '${oldChatMap['$index'].join('  ')}' : '',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -86,8 +103,8 @@ class FriendCard extends ConsumerWidget {
                 children: [
                   Text('$recentMonth/$recentDay'),
                   const SizedBox(height: 5,),
-                  newChatList['$index'] != null
-                  ? newChatList['$index'].length != 0
+                  newChatMap['$index'] != null
+                  ? newChatMap['$index'].length != 0
                     ? SizedBox(
                         height: 25,
                         width: 25,

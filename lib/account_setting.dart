@@ -135,6 +135,14 @@ class AccountSetting extends ConsumerWidget {
                     'userName': ref.read(userNameProvider.notifier).state,
                   });
 
+                  FirebaseFirestore.instance.collection('friends').where('friendName', isEqualTo: beforeUpdateUserName).get().then((QuerySnapshot snapshot) {
+                    snapshot.docs.forEach((doc) {
+                      FirebaseFirestore.instance.collection('friends').doc(doc.id).update({
+                        'friendName': ref.read(userNameProvider.notifier).state,
+                      });
+                    });
+                  });
+
                   FirebaseFirestore.instance.collection('chats').where('friendName', isEqualTo: beforeUpdateUserName).get().then((QuerySnapshot snapshot) {
                     snapshot.docs.forEach((doc) {
                       FirebaseFirestore.instance.collection('chats').doc(doc.id).update({

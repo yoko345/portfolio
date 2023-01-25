@@ -18,20 +18,24 @@ class ChatPage extends ConsumerWidget {
   int oldDateDay = 0;
 
   void addChat() async {
-    await FirebaseFirestore.instance.collection('chats').add({
-      'chat': chatEditingController.text,
-      'newChat': chatEditingController.text,
-      'id': userId,
-      'userName': userName,
-      'friendName': friendName,
-      'date': DateTime.now().millisecondsSinceEpoch,
-      'dateYear': DateTime.now().year,
-      'dateMonth': DateTime.now().month,
-      'dateDay': DateTime.now().day,
-      'dateHour': DateTime.now().hour,
-      'dateMinute': DateFormat('mm').format(DateTime.now()),
-    });
-    chatEditingController.clear();
+    if(chatEditingController.text != '') {
+      await FirebaseFirestore.instance.collection('chats').add({
+        'chat': chatEditingController.text,
+        'newChat': chatEditingController.text,
+        'id': userId,
+        'userName': userName,
+        'friendName': friendName,
+        'date': DateTime.now().millisecondsSinceEpoch,
+        'dateYear': DateTime.now().year,
+        'dateMonth': DateTime.now().month,
+        'dateDay': DateTime.now().day,
+        'dateHour': DateTime.now().hour,
+        'dateMinute': DateFormat('mm').format(DateTime.now()),
+      });
+      chatEditingController.clear();
+      } else {
+      return;
+    }
   }
 
   @override

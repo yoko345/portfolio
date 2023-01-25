@@ -185,6 +185,7 @@ class _SignUpState extends State<SignUp> {
                     style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                   )
               ),
+              SizedBox(height: MediaQuery.of(context).size.height/6),
             ],
           ),
         ),

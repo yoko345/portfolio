@@ -44,39 +44,39 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDy96pdjfN5Dn31Zwds2CLi84mpXZZaz30',
-    appId: '1:975550638067:web:ef93a0e801a7f11d34d486',
-    messagingSenderId: '975550638067',
-    projectId: 'portfolio1-f2558',
-    authDomain: 'portfolio1-f2558.firebaseapp.com',
-    storageBucket: 'portfolio1-f2558.appspot.com',
+    apiKey: 'AIzaSyBCh6vvtt6jnaU3ddSnbTKZuAUVs2TLA7Y',
+    appId: '1:555352782831:web:ea5f56adc972a8071c681a',
+    messagingSenderId: '555352782831',
+    projectId: 'fir-homework-5024c',
+    authDomain: 'fir-homework-5024c.firebaseapp.com',
+    storageBucket: 'fir-homework-5024c.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAza2r3sgDnhjU0oUCJUSMW_izfGHv5tjo',
-    appId: '1:975550638067:android:929e972d2f34dd9634d486',
-    messagingSenderId: '975550638067',
-    projectId: 'portfolio1-f2558',
-    storageBucket: 'portfolio1-f2558.appspot.com',
+    apiKey: 'AIzaSyAaKQNWevCEp2nsypNF7iZsaV5Uc3wkm0c',
+    appId: '1:555352782831:android:cbc6d8a4b231ea541c681a',
+    messagingSenderId: '555352782831',
+    projectId: 'fir-homework-5024c',
+    storageBucket: 'fir-homework-5024c.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCB4gtvM6X7aFQ6l_TCm_lsBppXHuGob3M',
-    appId: '1:975550638067:ios:1958b3c5e7ff9f4734d486',
-    messagingSenderId: '975550638067',
-    projectId: 'portfolio1-f2558',
-    storageBucket: 'portfolio1-f2558.appspot.com',
-    iosClientId: '975550638067-t33vvu169dt6oq77466mhkgkse1tkqop.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCaIynMD0Cysb6lkH64mLdrGs5zK--htNQ',
+    appId: '1:555352782831:ios:08be7a8c2fff47041c681a',
+    messagingSenderId: '555352782831',
+    projectId: 'fir-homework-5024c',
+    storageBucket: 'fir-homework-5024c.appspot.com',
+    iosClientId: '555352782831-n8ln2t6h7mgadduigms3n97c3ufduq7p.apps.googleusercontent.com',
     iosBundleId: 'com.example.portfolioVer1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCB4gtvM6X7aFQ6l_TCm_lsBppXHuGob3M',
-    appId: '1:975550638067:ios:1958b3c5e7ff9f4734d486',
-    messagingSenderId: '975550638067',
-    projectId: 'portfolio1-f2558',
-    storageBucket: 'portfolio1-f2558.appspot.com',
-    iosClientId: '975550638067-t33vvu169dt6oq77466mhkgkse1tkqop.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCaIynMD0Cysb6lkH64mLdrGs5zK--htNQ',
+    appId: '1:555352782831:ios:08be7a8c2fff47041c681a',
+    messagingSenderId: '555352782831',
+    projectId: 'fir-homework-5024c',
+    storageBucket: 'fir-homework-5024c.appspot.com',
+    iosClientId: '555352782831-n8ln2t6h7mgadduigms3n97c3ufduq7p.apps.googleusercontent.com',
     iosBundleId: 'com.example.portfolioVer1',
   );
 }

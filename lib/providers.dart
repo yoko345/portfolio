@@ -65,13 +65,14 @@ final searchProvider = StateProvider<String>((ref) => '');
 final toggleSearchWordProvider = StateProvider<bool>((ref) => false);
 
 final imageUrlProvider = StateProvider<String>((ref) => '');
+final imageUrlMapProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
 final userNameProvider = StateProvider<String>((ref) => '');
 
 final newChatProvider = StateProvider<List<String>>((ref) => []);
-final newChatListProvider = StateProvider<Map<String, dynamic>>((ref) => {});
+final newChatMapProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 final newChatCounterProvider = StateProvider<int>((ref) => 0);
 final oldChatProvider = StateProvider<List<String>>((ref) => []);
-final oldChatListProvider = StateProvider<Map<String, dynamic>>((ref) => {});
+final oldChatMapProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 final recentMonthProvider = StateProvider<int>((ref) => 0);
 final recentDayProvider = StateProvider<int>((ref) => 0);
