@@ -1,45 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'providers.dart';
+import 'models.dart';
 
-class ChatPage extends ConsumerWidget {
-  ChatPage({Key? key, required this.userId, required this.userName, required this.friendName}) : super(key: key);
+
+class ChatPage extends StatelessWidget {
+  ChatPage({Key? key, required this.userId, required this.friendId, required this.friendName}) : super(key: key);
   final String userId;
-  final String userName;
+  final String friendId;
   final String friendName;
 
   TextEditingController chatEditingController = TextEditingController();
   bool checkDate = true;
-  int checkDateCounter = 0;
-  int oldDateYear = 0;
-  int oldDateMonth = 0;
-  int oldDateDay = 0;
+  List<String> checkDateList = [];
+
+  CollectionReference<Chat> chatRef = FirebaseFirestore.instance.collection('chats')
+      .withConverter<Chat>(
+    fromFirestore: (snapshots, _) => Chat.fromJson(snapshots.data()!),
+    toFirestore: (chat, _) => chat.toJson(),
+  );
 
   void addChat() async {
     if(chatEditingController.text != '') {
-      await FirebaseFirestore.instance.collection('chats').add({
-        'chat': chatEditingController.text,
-        'newChat': chatEditingController.text,
-        'id': userId,
-        'userName': userName,
-        'friendName': friendName,
-        'date': DateTime.now().millisecondsSinceEpoch,
-        'dateYear': DateTime.now().year,
-        'dateMonth': DateTime.now().month,
-        'dateDay': DateTime.now().day,
-        'dateHour': DateTime.now().hour,
-        'dateMinute': DateFormat('mm').format(DateTime.now()),
-      });
+      await chatRef.add(
+          Chat(
+            chat: chatEditingController.text,
+            newChat: chatEditingController.text,
+            id: userId,
+            friendId: friendId,
+            date: DateTime.now().millisecondsSinceEpoch,
+            dateYear: DateTime.now().year,
+            dateMonth: DateTime.now().month,
+            dateDay: DateTime.now().day,
+            dateHour: DateTime.now().hour,
+            dateMinute: DateFormat('mm').format(DateTime.now()),
+          ));
       chatEditingController.clear();
-      } else {
+    } else {
       return;
     }
   }
 
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
 
     final double sizeWidth = MediaQuery.of(context).size.width;
 
@@ -57,17 +61,16 @@ class ChatPage extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          StreamBuilder<QuerySnapshot> (
-              stream: FirebaseFirestore.instance.collection('chats').orderBy('date').snapshots(),
+          StreamBuilder<QuerySnapshot<Chat>> (
+              stream: chatRef.orderBy('date').snapshots(),
               builder: (context, snapshot) {
                 if(snapshot.hasData) {
-                  List<DocumentSnapshot> chatsData = snapshot.data!.docs;
+                  final data = snapshot.data!;
                   return Expanded(
                     child: ListView.builder(
-                        itemCount: chatsData.length,
+                        itemCount: data.docs.length,
                         itemBuilder: (context, index) {
-                          Map<String, dynamic> chatData = chatsData[index].data()! as Map<String, dynamic>;
-                          return chatCard(chatData, sizeWidth);
+                          return chatCard(data.docs[index].data(), sizeWidth);
                         }
                     ),
                   );
@@ -99,8 +102,8 @@ class ChatPage extends ConsumerWidget {
                         suffixIcon: IconButton(
                           onPressed: () {
                             addChat();
-                            ref.read(recentMonthProvider.notifier).state = DateTime.now().month;
-                            ref.read(recentDayProvider.notifier).state = DateTime.now().day;
+                            checkDate = true;
+                            checkDateList = [];
                           },
                           icon: const Icon(Icons.send),
                           color: Colors.grey[600],
@@ -117,55 +120,29 @@ class ChatPage extends ConsumerWidget {
     );
   }
 
-  Widget chatCard(Map<String, dynamic> chatData, double sizeWidth) {
+  Widget chatCard(Chat chat, double sizeWidth) {
 
-    if((chatData['friendName'] ==  friendName && chatData['userName'] == userName) || (chatData['friendName'] == userName && chatData['userName'] == friendName)) {
-      if(chatData['dateYear'] == DateTime.now().year && chatData['dateMonth'] == DateTime.now().month && chatData['dateDay'] == DateTime.now().day && checkDate && checkDateCounter == 0) {
-        checkDateCounter = 1;
-      } else if(chatData['dateYear'] == DateTime.now().year && chatData['dateMonth'] == DateTime.now().month && chatData['dateDay'] == DateTime.now().day) {
-        if(checkDateCounter == 0) {
-          checkDate = true;
-          checkDateCounter = 1;
-        } else {
-          checkDate = false;
-        }
-      } if(chatData['dateYear'] == oldDateYear && chatData['dateMonth'] == oldDateMonth && chatData['dateDay'] == oldDateDay && checkDate && checkDateCounter == 0) {
-        checkDateCounter = 1;
-      } else if(chatData['dateYear'] == oldDateYear && chatData['dateMonth'] == oldDateMonth && chatData['dateDay'] == oldDateDay) {
-        if(checkDateCounter == 0) {
-          checkDate = true;
-          checkDateCounter = 1;
-        } else {
-          checkDate = false;
-        }
+    if((chat.friendId ==  friendId && chat.id == userId) || (chat.friendId == userId && chat.id == friendId)) {
+
+      if(!checkDateList.contains('${chat.dateYear}/${chat.dateMonth}/${chat.dateDay}')) {
+        checkDateList.add('${chat.dateYear}/${chat.dateMonth}/${chat.dateDay}');
+        checkDate = true;
       } else {
-        if(checkDateCounter == 0) {
-          // checkDate = true;
-          checkDateCounter = 1;
-          oldDateYear = chatData['dateYear'];
-          oldDateMonth = chatData['dateMonth'];
-          oldDateDay = chatData['dateDay'];
-        } else {
-          checkDate = true;
-          checkDateCounter == 0;
-          oldDateYear = chatData['dateYear'];
-          oldDateMonth = chatData['dateMonth'];
-          oldDateDay = chatData['dateDay'];
-        }
+        checkDate = false;
       }
 
       return Column(
         children: <Widget>[
 
           checkDate
-          ? Padding(
+              ? Padding(
             padding: const EdgeInsets.all(20),
-            child: Text('${chatData['dateMonth']}/${chatData['dateDay']}'),
+            child: Text('${chat.dateMonth}/${chat.dateDay}'),
           )
-          : Container(),
+              : Container(),
 
-          userId == chatData['id']
-          ? Padding(
+          userId == chat.id
+              ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
               alignment: Alignment.centerRight,
@@ -180,19 +157,19 @@ class ChatPage extends ConsumerWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Text(chatData['chat'], style: const TextStyle(fontSize: 14, color: Colors.white),),
+                      child: Text(chat.chat, style: const TextStyle(fontSize: 14, color: Colors.white),),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Text('${chatData['dateHour']}:${chatData['dateMinute']}'),
+                    child: Text('${chat.dateHour}:${chat.dateMinute}'),
                   ),
                   const SizedBox(height: 20,),
                 ],
               ),
             ),
           )
-          : Padding(
+              : Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
               alignment: Alignment.centerLeft,
@@ -207,12 +184,12 @@ class ChatPage extends ConsumerWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Text(chatData['chat'], style: const TextStyle(fontSize: 14,)),
+                      child: Text(chat.chat, style: const TextStyle(fontSize: 14,)),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Text('${chatData['dateHour']}:${chatData['dateMinute']}'),
+                    child: Text('${chat.dateHour}:${chat.dateMinute}'),
                   ),
                   const SizedBox(height: 20,),
                 ],
@@ -224,7 +201,5 @@ class ChatPage extends ConsumerWidget {
     } else {
       return Container();
     }
-
   }
-
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'models.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -17,17 +18,28 @@ class _SignUpState extends State<SignUp> {
   bool _toggleObscureText = true;
   bool _alreadySignedUp = false;
 
+  CollectionReference<UserModel> userModelRef = FirebaseFirestore.instance.collection('users')
+      .withConverter<UserModel>(
+    fromFirestore: (snapshots, _) => UserModel.fromJson(snapshots.data()!),
+    toFirestore: (userModel, _) => userModel.toJson(),
+  );
+
   void handleSignUp() async {
     try {
+
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailEditingController.text,
         password: passwordEditingController.text,
       );
+
       User user = userCredential.user!;
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'userName': nameEditingController.text,
-        'email': emailEditingController.text,
-      });
+      await userModelRef.add(
+          UserModel(
+            id: user.uid,
+            userName: nameEditingController.text,
+            email: emailEditingController.text,
+          ));
+
     } on FirebaseAuthException catch(e) {
       if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -93,8 +105,8 @@ class _SignUpState extends State<SignUp> {
               const Text('Chat App', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),),
               SizedBox(height: MediaQuery.of(context).size.height/6,),
               _alreadySignedUp
-              ? const SizedBox(height: 30,)
-              : TextFormField(
+                  ? const SizedBox(height: 30,)
+                  : TextFormField(
                 controller: nameEditingController,
                 keyboardType: TextInputType.text,
                 cursorColor: Colors.grey,

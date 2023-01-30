@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
-import 'sing_up.dart';
+import 'sign_up.dart';
 import 'friend_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

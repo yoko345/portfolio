@@ -5,34 +5,104 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io'; //ファイルの入出力ができるようにする
 import 'package:image_picker/image_picker.dart';//image_pickerをインポート
 import 'package:firebase_storage/firebase_storage.dart';//firebase_storageをインポート
-import 'package:flutter/services.dart';
-import 'providers.dart';
 import 'main.dart';
+import 'models.dart';
 
-class AccountSetting extends ConsumerWidget {
-  AccountSetting({Key? key, required this.userId}) : super(key: key);
+final imageUrlProvider = StateProvider<String>((ref) => '');
+final userNameProvider = StateProvider<String>((ref) => '');
+
+class AccountSetting extends ConsumerStatefulWidget {
+  const AccountSetting({Key? key, required this.userId}) : super(key: key);
   final String userId;
-  bool get mounted => true;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  AccountSettingState createState() => AccountSettingState();
+}
 
-    TextEditingController nameEditingController = TextEditingController(text: ref.read(userNameProvider.notifier).state);
+class AccountSettingState extends ConsumerState<AccountSetting> {
+  bool get mounted => true;
+
+  CollectionReference<UserModel> userModelRef = FirebaseFirestore.instance.collection('users')
+      .withConverter<UserModel>(
+    fromFirestore: (snapshots, _) => UserModel.fromJson(snapshots.data()!),
+    toFirestore: (userModel, _) => userModel.toJson(),
+  );
+
+  CollectionReference<FriendCard> friendCardRef = FirebaseFirestore.instance.collection('friendCards')
+      .withConverter<FriendCard>(
+    fromFirestore: (snapshots, _) => FriendCard.fromJson(snapshots.data()!),
+    toFirestore: (friendCard, _) => friendCard.toJson(),
+  );
+
+  CollectionReference<ImageModel> imageModelRef = FirebaseFirestore.instance.collection('images')
+      .withConverter<ImageModel>(
+    fromFirestore: (snapshots, _) => ImageModel.fromJson(snapshots.data()!),
+    toFirestore: (imageModel, _) => imageModel.toJson(),
+  );
+
+
+  void userReName(String userReName, String beforeUserReName) async {
+    await userModelRef.where('id', isEqualTo: widget.userId).get().then((QuerySnapshot snapshot) {
+      snapshot.docs.forEach((doc) {
+        userModelRef.doc(doc.id).update({
+          'userName': userReName,
+        });
+      });
+    });
+
+    await friendCardRef.where('friendName', isEqualTo: beforeUserReName).get().then((QuerySnapshot snapshot) {
+      snapshot.docs.forEach((doc) {
+        friendCardRef.doc(doc.id).update({
+          'friendName': userReName,
+        });
+      });
+    });
+  }
+
+  void getUserName() async {
+    await userModelRef.where('id', isEqualTo: widget.userId).get().then((QuerySnapshot snapshot) {
+      snapshot.docs.forEach((doc) {
+        ref.read(userNameProvider.notifier).state = doc.get('userName');
+      });
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    getUserName();
+    final userName = ref.watch(userNameProvider);
     final imageUrl = ref.watch(imageUrlProvider);
-    String beforeUpdateUserName = ref.read(userNameProvider.notifier).state;
+
+
+    TextEditingController nameEditingController = TextEditingController(text: userName);
+    String beforeUserReName = userName;
+
 
     File? image;
 
     Future<void> uploadImagePicker(File? image) async {
       try {
-        Reference reference = FirebaseStorage.instance.ref().child(userId);
+        Reference reference = FirebaseStorage.instance.ref().child(widget.userId);
         await reference.putFile(image!);
         ref.read(imageUrlProvider.notifier).state = await reference.getDownloadURL();
-        await FirebaseFirestore.instance.collection('images').doc(userId).set({
-          'userName': ref.read(userNameProvider.notifier).state,
-          'imageUrl': imageUrl,
+
+        await imageModelRef.where('id', isEqualTo: widget.userId).get().then((QuerySnapshot snapshot) {
+          snapshot.docs.forEach((doc) async {
+            if(!doc.exists) {
+              await imageModelRef.add(
+                  ImageModel(
+                    id: widget.userId,
+                    imageUrl: imageUrl,
+                  ));
+            } else {
+              imageModelRef.doc(doc.id).update({
+                imageUrl: imageUrl,
+              });
+            }
+          });
         });
-        debugPrint(imageUrl);
       } catch (e) {
         debugPrint(e.toString());
       }
@@ -52,9 +122,9 @@ class AccountSetting extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
-          color: Colors.black87
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.arrow_back),
+            color: Colors.black87
         ),
         title: const Text('アカウント設定', style: TextStyle(fontSize: 25, color: Colors.black87),),
         centerTitle: false,
@@ -62,13 +132,13 @@ class AccountSetting extends ConsumerWidget {
         elevation: 0,
         actions: [
           IconButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              if (!mounted) return; // Navigator.of(context)による「Do not use BuildContexts across async gaps.」という警告を避けるため
-              await Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {return const MyApp();}));
-            },
-            icon: const Icon(Icons.logout),
-            color: Colors.black87
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                if (!mounted) return; // Navigator.of(context)による「Do not use BuildContexts across async gaps.」という警告を避けるため
+                await Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {return const MyApp();}));
+              },
+              icon: const Icon(Icons.logout),
+              color: Colors.black87
           ),
         ],
       ),
@@ -84,7 +154,7 @@ class AccountSetting extends ConsumerWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(100),
-                      child: imageUrl==''
+                      child: imageUrl == ''
                           ? const Icon(Icons.image)
                           : Image.network(imageUrl, width: 200, height: 200, fit: BoxFit.cover,),
                     ),
@@ -129,36 +199,7 @@ class AccountSetting extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GestureDetector(
                 onTap: () {
-                  ref.read(userNameProvider.notifier).state = nameEditingController.text;
-
-                  FirebaseFirestore.instance.collection('users').doc(userId).update({
-                    'userName': ref.read(userNameProvider.notifier).state,
-                  });
-
-                  FirebaseFirestore.instance.collection('friends').where('friendName', isEqualTo: beforeUpdateUserName).get().then((QuerySnapshot snapshot) {
-                    snapshot.docs.forEach((doc) {
-                      FirebaseFirestore.instance.collection('friends').doc(doc.id).update({
-                        'friendName': ref.read(userNameProvider.notifier).state,
-                      });
-                    });
-                  });
-
-                  FirebaseFirestore.instance.collection('chats').where('friendName', isEqualTo: beforeUpdateUserName).get().then((QuerySnapshot snapshot) {
-                    snapshot.docs.forEach((doc) {
-                      FirebaseFirestore.instance.collection('chats').doc(doc.id).update({
-                        'friendName': ref.read(userNameProvider.notifier).state,
-                      });
-                    });
-                  });
-
-                  FirebaseFirestore.instance.collection('chats').where('userName', isEqualTo: beforeUpdateUserName).get().then((QuerySnapshot snapshot) {
-                    snapshot.docs.forEach((doc) {
-                      FirebaseFirestore.instance.collection('chats').doc(doc.id).update({
-                        'userName': ref.read(userNameProvider.notifier).state,
-                      });
-                    });
-                  });
-
+                  userReName(nameEditingController.text, beforeUserReName);
                   Navigator.of(context).pop();
                 },
                 child: Container(
@@ -169,10 +210,7 @@ class AccountSetting extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Center(
-                    child: Text(
-                      'プロフィールを更新',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
+                    child: Text('プロフィールを更新', style: TextStyle(color: Colors.white, fontSize: 18),),
                   ),
                 ),
               ),
@@ -183,3 +221,4 @@ class AccountSetting extends ConsumerWidget {
     );
   }
 }
+
