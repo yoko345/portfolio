@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:portfolio_ver1/firebase_services/firestore_service.dart';
+import 'package:portfolio_ver1/providers/firestore_providers.dart';
 import 'models.dart';
 
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends ConsumerWidget {
   ChatPage({Key? key, required this.userId, required this.friendId, required this.friendName}) : super(key: key);
   final String userId;
   final String friendId;
@@ -14,15 +16,16 @@ class ChatPage extends StatelessWidget {
   bool checkDate = true;
   List<String> checkDateList = [];
 
-  CollectionReference<Chat> chatRef = FirebaseFirestore.instance.collection('chats')
-      .withConverter<Chat>(
-    fromFirestore: (snapshots, _) => Chat.fromJson(snapshots.data()!),
-    toFirestore: (chat, _) => chat.toJson(),
-  );
+  // firestoreのリファレンスはウィジェットの中に作るよりも、専用のクラスにまとめたほうが良いです
+  // CollectionReference<Chat> chatRef = FirebaseFirestore.instance.collection('chats')
+  //     .withConverter<Chat>(
+  //   fromFirestore: (snapshots, _) => Chat.fromJson(snapshots.data()!),
+  //   toFirestore: (chat, _) => chat.toJson(),
+  // );
 
   void addChat() async {
     if(chatEditingController.text != '') {
-      await chatRef.add(
+      FirestoreService().addChat(
           Chat(
             chat: chatEditingController.text,
             newChat: chatEditingController.text,
@@ -43,7 +46,8 @@ class ChatPage extends StatelessWidget {
 
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chatList = ref.watch(chatProvider);
 
     final double sizeWidth = MediaQuery.of(context).size.width;
 
@@ -61,25 +65,35 @@ class ChatPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          StreamBuilder<QuerySnapshot<Chat>> (
-              stream: chatRef.orderBy('date').snapshots(),
-              builder: (context, snapshot) {
-                if(snapshot.hasData) {
-                  final data = snapshot.data!;
-                  return Expanded(
-                    child: ListView.builder(
-                        itemCount: data.docs.length,
-                        itemBuilder: (context, index) {
-                          return chatCard(data.docs[index].data(), sizeWidth);
-                        }
-                    ),
-                  );
-                }
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-          ),
+          // riverpodを使用する場合は　Firestore => UI　という流れではなく、　
+          // Firestore => Provider => UI　という流れにするとプロジェクトがまとまります
+          // StreamBuilder<QuerySnapshot<Chat>> (
+          //     stream: FirestoreService().getChatStream(changeQuery: (query)=>query.orderBy('date')),
+          //     builder: (context, snapshot) {
+          //       if(snapshot.hasData) {
+          //         final data = snapshot.data!;
+          //         return Expanded(
+          //           child: ListView.builder(
+          //               itemCount: data.docs.length,
+          //               itemBuilder: (context, index) {
+          //                 return chatCard(data.docs[index].data(), sizeWidth);
+          //               }
+          //           ),
+          //         );
+          //       }
+          //       return const Center(
+          //         child: CircularProgressIndicator(),
+          //       );
+          //     }
+          // ),
+
+          // UI部分に書く内容が少なく済みます
+          chatList!=null?Expanded(
+            child: ListView(
+              children: chatList.map((e) => chatCard(e, sizeWidth)).toList(),
+            ),
+          ):const CircularProgressIndicator(),
+
           Padding(
             padding: const EdgeInsets.all(10),
             child: Row(
