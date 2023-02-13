@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firestore_service.dart';
+import 'models.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -17,17 +18,23 @@ class _SignUpState extends State<SignUp> {
   bool _toggleObscureText = true;
   bool _alreadySignedUp = false;
 
+
   void handleSignUp() async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailEditingController.text,
         password: passwordEditingController.text,
       );
+
       User user = userCredential.user!;
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'userName': nameEditingController.text,
-        'email': emailEditingController.text,
-      });
+      FirestoreService().addUser(
+        UserModel(
+          id: user.uid,
+          userName: nameEditingController.text,
+          email: emailEditingController.text,
+        )
+      );
+
     } on FirebaseAuthException catch(e) {
       if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -93,8 +100,8 @@ class _SignUpState extends State<SignUp> {
               const Text('Chat App', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),),
               SizedBox(height: MediaQuery.of(context).size.height/6,),
               _alreadySignedUp
-              ? const SizedBox(height: 30,)
-              : TextFormField(
+                  ? const SizedBox(height: 30,)
+                  : TextFormField(
                 controller: nameEditingController,
                 keyboardType: TextInputType.text,
                 cursorColor: Colors.grey,
@@ -152,7 +159,7 @@ class _SignUpState extends State<SignUp> {
               SizedBox(height: MediaQuery.of(context).size.height/4.5),
               GestureDetector(
                 onTap: () {
-                  _alreadySignedUp?handleSignIn():handleSignUp();
+                  _alreadySignedUp ? handleSignIn() : handleSignUp();
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,

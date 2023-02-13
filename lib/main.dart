@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
-import 'sing_up.dart';
+import 'sign_up.dart';
 import 'friend_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isSignIn?FriendPage(userId: userId):const SignUp(),
+      body: _isSignIn ? FriendPage(userId: userId) : const SignUp(),
     );
   }
 }
