@@ -7,7 +7,11 @@
 	<key>CFBundleDisplayName</key>
     <string>Photo Library Access Warning</string>
     <key>NSCameraUsageDescription</key>
-    <string>Camera Library Access Warning</string>
+    <string>Access to take a photo by camera</string>
+    <key>NSAppleMusicUsageDescription</key>
+    <string>Access to pick a photo</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Access to pick a photo</string>
     <key>CFBundleDisplayName</key>
 	<string>Portfolio Ver1</string>
 	<key>CFBundleExecutable</key>

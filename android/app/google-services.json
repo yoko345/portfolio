@@ -1,0 +1,154 @@
+{
+  "project_info": {
+    "project_number": "555352782831",
+    "project_id": "fir-homework-5024c",
+    "storage_bucket": "fir-homework-5024c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555352782831:android:1b9b104df6eaa5401c681a",
+        "android_client_info": {
+          "package_name": "com.example.firebase_homework1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaKQNWevCEp2nsypNF7iZsaV5Uc3wkm0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "555352782831-4efv8ti8mvpk5ue2ebfo3ol2f2mlf2sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseHomework1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555352782831:android:a243af3bb4715c7b1c681a",
+        "android_client_info": {
+          "package_name": "com.example.firebase_homework2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaKQNWevCEp2nsypNF7iZsaV5Uc3wkm0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "555352782831-4efv8ti8mvpk5ue2ebfo3ol2f2mlf2sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseHomework1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555352782831:android:cbc6d8a4b231ea541c681a",
+        "android_client_info": {
+          "package_name": "com.example.portfolio_ver1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaKQNWevCEp2nsypNF7iZsaV5Uc3wkm0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "555352782831-4efv8ti8mvpk5ue2ebfo3ol2f2mlf2sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseHomework1"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555352782831:android:69e9401a4e1f7c791c681a",
+        "android_client_info": {
+          "package_name": "com.example.portfolio_ver2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaKQNWevCEp2nsypNF7iZsaV5Uc3wkm0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555352782831-hualjgs6rdu8jjlhf1bf9q68ssuprt9q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "555352782831-4efv8ti8mvpk5ue2ebfo3ol2f2mlf2sc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.firebaseHomework1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
