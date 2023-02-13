@@ -3,29 +3,34 @@ import 'firestore_service.dart';
 import 'models.dart';
 
 
-class FriendAdd extends StatelessWidget {
+class FriendAdd extends StatefulWidget {
   const FriendAdd({Key? key, required this.userId}) : super(key: key);
   final String userId;
 
+  @override
+  State<FriendAdd> createState() => _FriendAddState();
+}
+
+class _FriendAddState extends State<FriendAdd> {
+
+  TextEditingController nameEditingController = TextEditingController();
+
   void addFriend(String friendName) {
     FirestoreService().addFriend(
-      FriendCard(
-        imageUrl: '',
-        id: userId,
-        friendName: friendName,
-        friendId: '',
-        chat: '',
-        newChatCounter: 0,
-        date: '',
-      )
+        FriendCard(
+          imageUrl: '',
+          id: widget.userId,
+          friendName: friendName,
+          friendId: '',
+          chat: '',
+          newChatCounter: 0,
+          date: '',
+        )
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
-    TextEditingController nameEditingController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

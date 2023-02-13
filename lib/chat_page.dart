@@ -20,6 +20,7 @@ class ChatPage extends ConsumerWidget {
     final double sizeWidth = MediaQuery.of(context).size.width;
     final chatList = ref.watch(chatProvider);
 
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -136,12 +137,18 @@ class ChatPage extends ConsumerWidget {
 }
 
 
-class ChatTextField extends StatelessWidget {
+class ChatTextField extends StatefulWidget {
   ChatTextField({Key? key, required this.userId, required this.friendId, required this.checkDate, required this.checkDateList}) : super(key: key);
   final String userId;
   final String friendId;
   bool checkDate;
   List<String> checkDateList;
+
+  @override
+  State<ChatTextField> createState() => _ChatTextFieldState();
+}
+
+class _ChatTextFieldState extends State<ChatTextField> {
 
   TextEditingController chatEditingController = TextEditingController();
 
@@ -158,8 +165,8 @@ class ChatTextField extends StatelessWidget {
           Chat(
             chat: chatEditingController.text,
             newChat: chatEditingController.text,
-            id: userId,
-            friendId: friendId,
+            id: widget.userId,
+            friendId: widget.friendId,
             date: DateTime.now().millisecondsSinceEpoch,
             dateYear: DateTime.now().year,
             dateMonth: DateTime.now().month,
@@ -176,6 +183,7 @@ class ChatTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -198,8 +206,8 @@ class ChatTextField extends StatelessWidget {
                   suffixIcon: IconButton(
                     onPressed: () {
                       addChat();
-                      checkDate = true;
-                      checkDateList = [];
+                      widget.checkDate = true;
+                      widget.checkDateList = [];
                     },
                     icon: const Icon(Icons.send),
                     color: Colors.grey[600],
@@ -213,4 +221,5 @@ class ChatTextField extends StatelessWidget {
     );
   }
 }
+
 
