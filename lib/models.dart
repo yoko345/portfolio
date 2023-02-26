@@ -26,14 +26,6 @@ class UserModel {
       'email': email,
     };
   }
-
-  UserModel copyWith({String? id, String? userName, String? email}) {
-    return UserModel(
-      id: id?? this.id,
-      userName: userName?? this.userName,
-      email: email?? this.email,
-    );
-  }
 }
 
 
@@ -42,29 +34,26 @@ class ImageModel{
   const ImageModel({
     required this.id,
     required this.imageUrl,
+    required this.beforeFileNameList,
   });
 
   ImageModel.fromJson(Map<String, Object?> json)
       : this(
     id: json['id']! as String,
     imageUrl: json['imageUrl'] as String,
+    beforeFileNameList: json['beforeFileNameList'] as List<dynamic>,
   );
 
   final String id;
   final String imageUrl;
+  final List<dynamic> beforeFileNameList;
 
   Map<String, Object?> toJson() {
     return {
       'id': id,
       'imageUrl': imageUrl,
+      'beforeFileNameList': beforeFileNameList,
     };
-  }
-
-  ImageModel copyWith({String? id, String? imageUrl}) {
-    return ImageModel(
-      id: id?? this.id,
-      imageUrl: imageUrl?? this.imageUrl,
-    );
   }
 }
 
@@ -110,18 +99,6 @@ class FriendCard{
       'newChatCounter': newChatCounter,
       'date': date,
     };
-  }
-
-  FriendCard copyWith({String? imageUrl, String? id, String? friendName, String? friendId, String? chat, int? newChatCounter, String? date}) {
-    return FriendCard(
-      imageUrl: imageUrl?? this.imageUrl,
-      id: id?? this.id,
-      friendName: friendName?? this.friendName,
-      friendId: friendId?? this.friendId,
-      chat: chat?? this.chat,
-      newChatCounter: newChatCounter?? this.newChatCounter,
-      date: date?? this.date,
-    );
   }
 }
 
@@ -179,20 +156,5 @@ class Chat{
       'dateHour': dateHour,
       'dateMinute': dateMinute,
     };
-  }
-
-  Chat copyWith({String? chat, String? newChat, String? id, String? friendId, int? date, int? dateYear, int? dateMonth, int? dateDay, int? dateHour, String? dateMinute, }) {
-    return Chat(
-      chat: chat?? this.chat,
-      newChat: newChat?? this.newChat,
-      id: id?? this.id,
-      friendId: friendId?? this.friendId,
-      date: date?? this.date,
-      dateYear: dateYear?? this.dateYear,
-      dateMonth: dateMonth?? this.dateMonth,
-      dateDay: dateDay?? this.dateDay,
-      dateHour: dateHour?? this.dateHour,
-      dateMinute: dateMinute?? this.dateMinute,
-    );
   }
 }

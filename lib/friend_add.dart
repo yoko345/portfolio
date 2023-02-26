@@ -44,52 +44,56 @@ class _FriendAddState extends State<FriendAdd> {
         elevation: 0,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height/4.5,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                controller: nameEditingController,
-                keyboardType: TextInputType.text,
-                style: const TextStyle(fontSize: 20),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey, width: 2),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height/4.5,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GestureDetector(
-                onTap: () {
-                  if(nameEditingController.text != '') {
-                    addFriend(nameEditingController.text);
-                    Navigator.of(context).pop();
-                  } else {
-                    return;
-                  }
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.orange[400],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '友達の追加登録',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque, // 画面外のタップを検知する
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height/4.5,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextFormField(
+                  controller: nameEditingController,
+                  keyboardType: TextInputType.text,
+                  style: const TextStyle(fontSize: 20),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 2),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: MediaQuery.of(context).size.height/4.5,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: GestureDetector(
+                  onTap: () {
+                    if(nameEditingController.text != '') {
+                      addFriend(nameEditingController.text);
+                      Navigator.of(context).pop();
+                    } else {
+                      return;
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.orange[400],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        '友達の追加登録',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -90,110 +90,114 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height/6,),
-              const Text('Chat App', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),),
-              SizedBox(height: MediaQuery.of(context).size.height/6,),
-              _alreadySignedUp
-                  ? const SizedBox(height: 30,)
-                  : TextFormField(
-                controller: nameEditingController,
-                keyboardType: TextInputType.text,
-                cursorColor: Colors.grey,
-                decoration: const InputDecoration(
-                  labelText: '氏名',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red, width: 2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30,),
-              TextFormField(
-                controller: emailEditingController,
-                keyboardType: TextInputType.emailAddress,
-                autovalidateMode: AutovalidateMode.onUserInteraction,  // この記述がないとvalidatorの表示がされない
-                validator: (String? value) {
-                  return value != null && !value.contains('@') ? '正しいメールアドレスを入力してください' : null;
-                },
-                cursorColor: Colors.grey,
-                decoration: const InputDecoration(
-                  labelText: 'メールアドレス',
-                  labelStyle: TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red, width: 2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30,),
-              TextFormField(
-                controller: passwordEditingController,
-                obscureText: _toggleObscureText,
-                keyboardType: TextInputType.text,
-                cursorColor: Colors.grey,
-                decoration: InputDecoration(
-                  labelText: 'パスワード',
-                  labelStyle: const TextStyle(color: Colors.grey),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red, width: 2),
-                  ),
-                  suffixIcon: IconButton(
-                    color: _toggleObscureText ? Colors.black87 : Colors.grey,
-                    icon: Icon(_toggleObscureText?Icons.visibility_off:Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        _toggleObscureText = !_toggleObscureText;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height/4.5),
-              GestureDetector(
-                onTap: () {
-                  _alreadySignedUp ? handleSignIn() : handleSignUp();
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.orange[400],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _alreadySignedUp ? 'ログイン' : '新規アカウントを作成',
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque, // 画面外のタップを検知する
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height/6,),
+                const Text('Chat App', style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),),
+                SizedBox(height: MediaQuery.of(context).size.height/6,),
+                _alreadySignedUp
+                    ? const SizedBox(height: 30,)
+                    : TextFormField(
+                  controller: nameEditingController,
+                  keyboardType: TextInputType.text,
+                  cursorColor: Colors.grey,
+                  decoration: const InputDecoration(
+                    labelText: '氏名',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red, width: 2),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 30,),
-              Text(
-                _alreadySignedUp ? 'アカウントをお持ちではありませんか？' : '既にアカウントをお持ちですか？',
-                style: const TextStyle(color: Colors.black87,),
-              ),
-              TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _alreadySignedUp = !_alreadySignedUp;
-                    });
+                const SizedBox(height: 30,),
+                TextFormField(
+                  controller: emailEditingController,
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,  // この記述がないとvalidatorの表示がされない
+                  validator: (String? value) {
+                    return value != null && !value.contains('@') ? '正しいメールアドレスを入力してください' : null;
                   },
-                  child: Text(
-                    _alreadySignedUp ? 'アカウントの作成はこちら' : 'こちらからログイン',
-                    style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                  )
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height/6),
-            ],
+                  cursorColor: Colors.grey,
+                  decoration: const InputDecoration(
+                    labelText: 'メールアドレス',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30,),
+                TextFormField(
+                  controller: passwordEditingController,
+                  obscureText: _toggleObscureText,
+                  keyboardType: TextInputType.text,
+                  cursorColor: Colors.grey,
+                  decoration: InputDecoration(
+                    labelText: 'パスワード',
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red, width: 2),
+                    ),
+                    suffixIcon: IconButton(
+                      color: _toggleObscureText ? Colors.black87 : Colors.grey,
+                      icon: Icon(_toggleObscureText?Icons.visibility_off:Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _toggleObscureText = !_toggleObscureText;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height/4.5),
+                GestureDetector(
+                  onTap: () {
+                    _alreadySignedUp ? handleSignIn() : handleSignUp();
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.orange[400],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        _alreadySignedUp ? 'ログイン' : '新規アカウントを作成',
+                        style: const TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30,),
+                Text(
+                  _alreadySignedUp ? 'アカウントをお持ちではありませんか？' : '既にアカウントをお持ちですか？',
+                  style: const TextStyle(color: Colors.black87,),
+                ),
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _alreadySignedUp = !_alreadySignedUp;
+                      });
+                    },
+                    child: Text(
+                      _alreadySignedUp ? 'アカウントの作成はこちら' : 'こちらからログイン',
+                      style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                    )
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height/6),
+              ],
+            ),
           ),
         ),
       ),

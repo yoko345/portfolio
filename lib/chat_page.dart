@@ -4,23 +4,55 @@ import 'package:portfolio_ver1/firestore_providers.dart';
 import 'models.dart';
 import 'firestore_service.dart';
 
-
-class ChatPage extends ConsumerWidget {
+class ChatPage extends StatefulWidget {
   ChatPage({Key? key, required this.userId, required this.friendId, required this.friendName}) : super(key: key);
   final String userId;
   final String friendId;
   final String friendName;
 
-  bool checkDate = true;
-  List<String> checkDateList = [];
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
+
+  Map<int, String> checkDateMap = {0: ''};
+  int index = 0;
+
+  TextEditingController chatEditingController = TextEditingController();
+
+  void addChat() {
+    if(chatEditingController.text != '') {
+      int dateMinuteInt = DateTime.now().minute;
+      String dateMinuteString = '';
+      if (dateMinuteInt < 10) {
+        dateMinuteString = '0$dateMinuteInt';
+      } else {
+        dateMinuteString = dateMinuteInt.toString();
+      }
+      FirestoreService().addChat(
+          Chat(
+            chat: chatEditingController.text,
+            newChat: chatEditingController.text,
+            id: widget.userId,
+            friendId: widget.friendId,
+            date: DateTime.now().millisecondsSinceEpoch,
+            dateYear: DateTime.now().year,
+            dateMonth: DateTime.now().month,
+            dateDay: DateTime.now().day,
+            dateHour: DateTime.now().hour,
+            dateMinute: dateMinuteString,
+          )
+      );
+      chatEditingController.clear();
+    } else {
+      return;
+    }
+  }
+
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-
-    final double sizeWidth = MediaQuery.of(context).size.width;
-    final chatList = ref.watch(chatProvider);
-
-
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -28,52 +60,57 @@ class ChatPage extends ConsumerWidget {
             icon: const Icon(Icons.arrow_back),
             color: Colors.black87
         ),
-        title: Text(friendName, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black87),),
+        title: Text(widget.friendName, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black87),),
         centerTitle: false,
         backgroundColor: Colors.white54,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          chatList != null
-          ? Expanded(
-            child: ListView(
-              children: chatList.map((chat) => chatCard(chat, sizeWidth)).toList(),
-            ),
-          )
-          : const CircularProgressIndicator(),
-        ChatTextField(userId: userId, friendId: friendId, checkDate: checkDate, checkDateList: checkDateList) , // コードは下にある
-        ],
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque, // 画面外のタップを検知する
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Consumer(
+          builder: (context, ref, child) {
+            final chatList = ref.watch(chatProvider);
+            final double sizeWidth = MediaQuery.of(context).size.width;
+
+            return Column(
+              children: [
+                chatList != null
+                ? Expanded(
+                  child: ListView(
+                    children: chatList.map((chat) => chatCard(chat, sizeWidth)).toList(),
+                  ),
+                )
+                : const CircularProgressIndicator(),
+                child!
+              ]
+            );
+          },
+          child: chatTextField(), // コードは下にある
+        ),
       ),
     );
   }
 
   Widget chatCard(Chat chat, double sizeWidth) {
 
-    if((chat.friendId ==  friendId && chat.id == userId) || (chat.friendId == userId && chat.id == friendId)) {
 
-      if(checkDateList.isNotEmpty) {
-        if(!checkDateList.contains('${chat.dateYear}/${chat.dateMonth}/${chat.dateDay}')) {
-          checkDateList.add('${chat.dateYear}/${chat.dateMonth}/${chat.dateDay}');
-          checkDate = true;
-        } else {
-          checkDate = false;
-        }
-      } else {
-        checkDateList.add('${chat.dateYear}/${chat.dateMonth}/${chat.dateDay}');
-      }
+
+    if((chat.friendId ==  widget.friendId && chat.id == widget.userId) || (chat.friendId == widget.userId && chat.id == widget.friendId)) {
+        index++;
+        checkDateMap[index] = '${chat.dateYear}/${chat.dateMonth}/${chat.dateDay}';
 
       return Column(
         children: <Widget>[
-
-          checkDate
+          checkDateMap[index - 1] != checkDateMap[index]
           ? Padding(
             padding: const EdgeInsets.all(20),
             child: Text('${chat.dateMonth}/${chat.dateDay}'),
+            // child: Text('${checkDateMap[oldIndex]}'),
           )
-          : Container(),
+          : const SizedBox(),
 
-          userId == chat.id
+          widget.userId == chat.id
           ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Align(
@@ -134,56 +171,9 @@ class ChatPage extends ConsumerWidget {
       return Container();
     }
   }
-}
 
 
-class ChatTextField extends StatefulWidget {
-  ChatTextField({Key? key, required this.userId, required this.friendId, required this.checkDate, required this.checkDateList}) : super(key: key);
-  final String userId;
-  final String friendId;
-  bool checkDate;
-  List<String> checkDateList;
-
-  @override
-  State<ChatTextField> createState() => _ChatTextFieldState();
-}
-
-class _ChatTextFieldState extends State<ChatTextField> {
-
-  TextEditingController chatEditingController = TextEditingController();
-
-  void addChat() {
-    if(chatEditingController.text != '') {
-      int dateMinuteInt = DateTime.now().minute;
-      String dateMinuteString = '';
-      if (dateMinuteInt < 10) {
-        dateMinuteString = '0$dateMinuteInt';
-      } else {
-        dateMinuteString = dateMinuteInt.toString();
-      }
-      FirestoreService().addChat(
-          Chat(
-            chat: chatEditingController.text,
-            newChat: chatEditingController.text,
-            id: widget.userId,
-            friendId: widget.friendId,
-            date: DateTime.now().millisecondsSinceEpoch,
-            dateYear: DateTime.now().year,
-            dateMonth: DateTime.now().month,
-            dateDay: DateTime.now().day,
-            dateHour: DateTime.now().hour,
-            dateMinute: dateMinuteString,
-          )
-      );
-      chatEditingController.clear();
-    } else {
-      return;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
+  Widget chatTextField() {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Row(
@@ -206,8 +196,10 @@ class _ChatTextFieldState extends State<ChatTextField> {
                   suffixIcon: IconButton(
                     onPressed: () {
                       addChat();
-                      widget.checkDate = true;
-                      widget.checkDateList = [];
+                      setState(() {
+                        checkDateMap = {0: ''};
+                        index = 0;
+                      });
                     },
                     icon: const Icon(Icons.send),
                     color: Colors.grey[600],
@@ -220,6 +212,5 @@ class _ChatTextFieldState extends State<ChatTextField> {
       ),
     );
   }
+
 }
-
-

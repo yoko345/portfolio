@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>975550638067-t33vvu169dt6oq77466mhkgkse1tkqop.apps.googleusercontent.com</string>
+	<string>555352782831-n8ln2t6h7mgadduigms3n97c3ufduq7p.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.975550638067-t33vvu169dt6oq77466mhkgkse1tkqop</string>
+	<string>com.googleusercontent.apps.555352782831-n8ln2t6h7mgadduigms3n97c3ufduq7p</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCB4gtvM6X7aFQ6l_TCm_lsBppXHuGob3M</string>
+	<string>AIzaSyCaIynMD0Cysb6lkH64mLdrGs5zK--htNQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>975550638067</string>
+	<string>555352782831</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.portfolioVer1</string>
 	<key>PROJECT_ID</key>
-	<string>portfolio1-f2558</string>
+	<string>fir-homework-5024c</string>
 	<key>STORAGE_BUCKET</key>
-	<string>portfolio1-f2558.appspot.com</string>
+	<string>fir-homework-5024c.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:975550638067:ios:1958b3c5e7ff9f4734d486</string>
+	<string>1:555352782831:ios:08be7a8c2fff47041c681a</string>
 </dict>
 </plist>

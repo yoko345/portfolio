@@ -1,6 +1,6 @@
-# portfolio_ver1
+# portfolio
 
-A new Flutter project.
+ポートフォリオ用の制作物
 
 ## Getting Started
 
